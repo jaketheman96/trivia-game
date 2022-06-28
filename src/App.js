@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import Login from './Components/Login';
-import Settings from './Components/Settings';
+import Login from './pages/Login';
+import Settings from './pages/Settings';
 
 class App extends Component {
   render() {
