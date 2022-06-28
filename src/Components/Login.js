@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class Login extends React.Component {
   state = {
@@ -13,6 +14,11 @@ class Login extends React.Component {
 
   handleClick = (event) => {
     event.preventDefault();
+  }
+
+  handleSettingsChange = () => {
+    const { history } = this.props;
+    history.push('/settings');
   }
 
   render() {
@@ -49,10 +55,21 @@ class Login extends React.Component {
           >
             Play
           </button>
+          <button
+            type="button"
+            data-testid="btn-settings"
+            onClick={ this.handleSettingsChange }
+          >
+            Configurações
+          </button>
         </form>
       </div>
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.func.isRequired,
+};
 
 export default Login;
