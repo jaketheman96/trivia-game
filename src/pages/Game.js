@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAssertions } from '../redux/actions';
 import Timer from '../components/Timer';
+import Header from '../components/Header';
 
 const RESPONSE_CODE_NUM = 3;
 const NUMBER_INDEX = 4;
@@ -50,7 +51,7 @@ class Game extends React.Component {
   }
 
   changeSetStyle = () => {
-    this.setState({ setStyle: true });
+    this.setState({ setStyle: true, showNext: true });
   }
 
   handleNextQuestion = () => {
@@ -78,28 +79,11 @@ class Game extends React.Component {
   }
 
   render() {
-    const {
-      hashMail,
-      name,
-      score,
-      assertions,
-    } = this.props;
+    const { assertions } = this.props;
     const { questions, index, rigthAnswers, setStyle, showNext } = this.state;
     return (
       <>
-        <header>
-          <h2
-            data-testid="header-player-name"
-          >
-            {name}
-          </h2>
-          <img
-            src={ `https://www.gravatar.com/avatar/${hashMail}` }
-            alt={ `${name}'s avatar` }
-            data-testid="header-profile-picture"
-          />
-          <p data-testid="header-score">{`Seu score é: ${score}`}</p>
-        </header>
+        <Header />
         {
           questions[0]
             ? (
@@ -155,19 +139,13 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = ({ globalReducer }) => {
-  const { name, gravatarEmail, score, assertions } = globalReducer;
+  const { assertions } = globalReducer;
   return ({
-    name,
-    hashMail: gravatarEmail,
-    score,
     assertions,
   });
 };
 
 Game.propTypes = {
-  hashMail: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
