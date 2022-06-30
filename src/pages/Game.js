@@ -13,6 +13,7 @@ class Game extends React.Component {
     index: 0,
     rigthAnswers: [],
     setStyle: false,
+    showNext: false,
   }
 
   async componentDidMount() {
@@ -59,17 +60,20 @@ class Game extends React.Component {
       this.setState({
         index: 0,
         setStyle: false,
+        showNext: false,
       });
     }
     this.setState((prevState) => ({
       index: prevState.index + 1,
       setStyle: false,
+      showNext: false,
     }));
   }
 
   handleAnswer = () => {
     this.setState({
       setStyle: true,
+      showNext: true,
     });
   }
 
@@ -80,7 +84,7 @@ class Game extends React.Component {
       score,
       assertions,
     } = this.props;
-    const { questions, index, rigthAnswers, setStyle } = this.state;
+    const { questions, index, rigthAnswers, setStyle, showNext } = this.state;
     return (
       <>
         <header>
@@ -139,6 +143,7 @@ class Game extends React.Component {
                   <Timer
                     setStyle={ this.changeSetStyle }
                     handleNextQuestion={ this.handleNextQuestion }
+                    showNext={ showNext }
                   />
                 </div>
               </div>
