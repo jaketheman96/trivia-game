@@ -44,15 +44,20 @@ class Timer extends React.Component {
 
   render() {
     const { seconds } = this.state;
+    const { showNext } = this.props;
     return (
       <>
         <h2>{`Tempo: ${seconds} segundos`}</h2>
-        <button
-          type="button"
-          onClick={ this.handleNext }
-        >
-          Próxima pergunta
-        </button>
+        { showNext
+          && (
+            <button
+              type="button"
+              onClick={ this.handleNext }
+              data-testid="btn-next"
+            >
+              Próxima pergunta
+            </button>
+          ) }
       </>
     );
   }
@@ -61,6 +66,7 @@ class Timer extends React.Component {
 Timer.propTypes = {
   setStyle: PropTypes.func.isRequired,
   handleNextQuestion: PropTypes.func.isRequired,
+  showNext: PropTypes.bool.isRequired,
 };
 
 export default Timer;
