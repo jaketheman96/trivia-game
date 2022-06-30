@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAssertions } from '../redux/actions';
+import Timer from '../components/Timer';
 
 const RESPONSE_CODE_NUM = 3;
 const NUMBER_INDEX = 4;
@@ -24,7 +25,6 @@ class Game extends React.Component {
         localStorage.removeItem('token');
         return history.push('/');
       }
-      console.log(data);
       this.setState({
         questions: data.results,
       }, () => {
@@ -48,15 +48,22 @@ class Game extends React.Component {
     }
   }
 
+  changeSetStyle = () => {
+    this.setState({ setStyle: true });
+  }
+
   handleNextQuestion = () => {
     const { index } = this.state;
+    this.timer = 0;
     if (index === NUMBER_INDEX) {
-      return this.setState({
+      this.setState({
         index: 0,
+        setStyle: false,
       });
     }
-    return this.setState((prevState) => ({
+    this.setState((prevState) => ({
       index: prevState.index + 1,
+      setStyle: false,
     }));
   }
 
@@ -120,19 +127,20 @@ class Game extends React.Component {
                               : {}
                           }
                           onClick={ this.handleAnswer }
+                          disabled={ setStyle }
                         >
-                          { assertion }
+                          {assertion}
                         </button>
                       ))
                     )
                   }
                 </div>
-                <button
-                  type="button"
-                  onClick={ this.handleNextQuestion }
-                >
-                  Próxima pergunta
-                </button>
+                <div className="timer">
+                  <Timer
+                    setStyle={ this.changeSetStyle }
+                    handleNextQuestion={ this.handleNextQuestion }
+                  />
+                </div>
               </div>
             ) : <p>Token expirado</p>
         }
