@@ -4,9 +4,10 @@ import { ADD_USER_INFOS, GET_ASSERTIONS } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
-  assertions: [],
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
+  assertionsUser: [],
 };
 
 const globalReducer = (state = INITIAL_STATE, action) => {
@@ -21,7 +22,7 @@ const globalReducer = (state = INITIAL_STATE, action) => {
   case GET_ASSERTIONS:
     return {
       ...state,
-      assertions: action.payload,
+      assertionsUser: action.payload,
     };
   default:
     return state;
