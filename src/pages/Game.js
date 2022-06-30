@@ -11,6 +11,7 @@ class Game extends React.Component {
     questions: [],
     index: 0,
     rigthAnswers: [],
+    setStyle: false,
   }
 
   async componentDidMount() {
@@ -59,6 +60,12 @@ class Game extends React.Component {
     }));
   }
 
+  handleAnswer = () => {
+    this.setState({
+      setStyle: true,
+    });
+  }
+
   render() {
     const {
       hashMail,
@@ -66,7 +73,7 @@ class Game extends React.Component {
       score,
       assertions,
     } = this.props;
-    const { questions, index, rigthAnswers } = this.state;
+    const { questions, index, rigthAnswers, setStyle } = this.state;
     return (
       <>
         <header>
@@ -103,6 +110,16 @@ class Game extends React.Component {
                             assertion === rigthAnswers[index]
                               ? 'correct-answer' : `wrong-answer-${position}`
                           }
+                          style={
+                            setStyle
+                              ? {
+                                border: assertion === rigthAnswers[index]
+                                  ? '3px solid rgb(6, 240, 15)'
+                                  : '3px solid red',
+                              }
+                              : {}
+                          }
+                          onClick={ this.handleAnswer }
                         >
                           { assertion }
                         </button>
