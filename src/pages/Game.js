@@ -11,6 +11,7 @@ class Game extends React.Component {
     questions: [],
     index: 0,
     rigthAnswers: [],
+    timer: 5,
   }
 
   async componentDidMount() {
@@ -23,7 +24,7 @@ class Game extends React.Component {
         localStorage.removeItem('token');
         return history.push('/');
       }
-      console.log(data);
+      await this.startTimer(); // <--- dispara function startTimer aqui...
       this.setState({
         questions: data.results,
       }, () => {
@@ -47,16 +48,42 @@ class Game extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.stopTimer();
+  }
+
+  startTimer = async () => {
+    const ms = 1000;
+    const { timer } = this.state;
+    if (timer !== 0) {
+      this.myInterval = setInterval(() => {
+        this.setState((prev) => ({
+          timer: prev.timer - 1,
+        }));
+      }, ms);
+    } else {
+      this.stopTimer();
+    }
+  }
+
+  stopTimer = () => {
+    clearInterval(this.myInterval);
+  }
+
   handleNextQuestion = () => {
     const { index } = this.state;
     if (index === NUMBER_INDEX) {
-      return this.setState({
+      this.stopTimer();
+      this.setState({
         index: 0,
-      });
+        timer: 30,
+      }, () => this.startTimer());
     }
-    return this.setState((prevState) => ({
+    this.stopTimer();
+    this.setState((prevState) => ({
       index: prevState.index + 1,
-    }));
+      timer: 30,
+    }), () => this.startTimer());
   }
 
   render() {
@@ -66,7 +93,7 @@ class Game extends React.Component {
       score,
       assertions,
     } = this.props;
-    const { questions, index, rigthAnswers } = this.state;
+    const { questions, index, rigthAnswers, timer } = this.state;
     return (
       <>
         <header>
@@ -104,11 +131,14 @@ class Game extends React.Component {
                               ? 'correct-answer' : `wrong-answer-${position}`
                           }
                         >
-                          { assertion }
+                          {assertion}
                         </button>
                       ))
                     )
                   }
+                </div>
+                <div className="timer">
+                  <h3>{`Tempo: ${timer} segundos`}</h3>
                 </div>
                 <button
                   type="button"
