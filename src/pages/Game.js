@@ -56,6 +56,7 @@ class Game extends React.Component {
 
   handleNextQuestion = () => {
     const { index } = this.state;
+    const { history } = this.props;
     this.timer = 0;
     if (index === NUMBER_INDEX) {
       this.setState({
@@ -63,6 +64,7 @@ class Game extends React.Component {
         setStyle: false,
         showNext: false,
       });
+      history.push('/feedback');
     }
     this.setState((prevState) => ({
       index: prevState.index + 1,

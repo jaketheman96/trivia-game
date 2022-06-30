@@ -14,7 +14,8 @@ class Feedback extends React.Component {
         <div className="feedbacks">
           {
             assertions < NUMBER_OF_ASSERTIONS
-              ? <p>Could be better...</p> : <p>Well Done!</p>
+              ? <p data-testid="feedback-text">Could be better...</p>
+              : <p data-testid="feedback-text">Well Done!</p>
           }
         </div>
       </>
