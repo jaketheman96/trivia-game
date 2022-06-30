@@ -6,7 +6,7 @@ class Feedback extends React.Component {
     return (
       <>
         <Header />
-        <div className="feedbacks" />
+        <div className="feedbacks" data-testid="feedback-text" />
       </>
     );
   }
