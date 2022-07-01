@@ -8,7 +8,7 @@ import Header from '../components/Header';
 const RESPONSE_CODE_NUM = 3;
 const NUMBER_INDEX = 4;
 const HARD = 3;
-const SCORE_10 = 10;
+// const SCORE_10 = 10;
 const CORRECT_ANSWER = 'correct-answer';
 
 class Game extends React.Component {
@@ -100,21 +100,14 @@ class Game extends React.Component {
   }
 
   handleAnswer = ({ target }) => {
-    const { seconds } = this.state;
-    const { name, id } = target;
+    const { id } = target;
     this.setState({ stopTimer: true, setStyle: true, showNext: true });
     if (id.includes(CORRECT_ANSWER)) {
-      this.setState((prevState) => ({ totalAssertions: prevState.totalAssertions + 1 }));
-      this.sum(name, seconds);
+      this.setState((prevState) => ({
+        totalAssertions: prevState.totalAssertions + 1,
+        score: prevState.score + 1,
+      }));
     }
-  }
-
-  sum = (index, seconds) => {
-    const { difficulty } = this.state;
-    const sum = (
-      Number(SCORE_10) + (Number(seconds) * Number(difficulty[index])));
-    this.setState((prevState) => ({ score:
-      (Number(prevState.score) + Number(sum)) }));
   }
 
   startTimer = () => {

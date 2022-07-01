@@ -21,7 +21,7 @@ class Header extends React.Component {
           alt={ `${name}'s avatar` }
           data-testid="header-profile-picture"
         />
-        <p data-testid="header-score">{`Seu score é: ${score}`}</p>
+        <p data-testid="header-score">{score}</p>
       </header>
     );
   }
