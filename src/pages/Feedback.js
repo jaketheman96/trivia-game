@@ -6,6 +6,11 @@ import Header from '../components/Header';
 const NUMBER_OF_ASSERTIONS = 3;
 
 class Feedback extends React.Component {
+  playAgain = () => {
+    const { history } = this.props;
+    history.push('/');
+  }
+
   render() {
     const { assertions } = this.props;
     return (
@@ -18,6 +23,13 @@ class Feedback extends React.Component {
               : <p data-testid="feedback-text">Well Done!</p>
           }
         </div>
+        <button
+          type="button"
+          onClick={ this.playAgain }
+          data-testid="btn-play-again"
+        >
+          Play Again
+        </button>
       </>
     );
   }
@@ -32,6 +44,9 @@ const mapStateToProps = ({ player }) => {
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect(mapStateToProps, null)(Feedback);
