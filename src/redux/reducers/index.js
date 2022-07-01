@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   assertionsUser: [],
 };
 
-const globalReducer = (state = INITIAL_STATE, action) => {
+const player = (state = INITIAL_STATE, action) => {
   const { type, userInfos } = action;
   switch (type) {
   case ADD_USER_INFOS:
@@ -29,7 +29,7 @@ const globalReducer = (state = INITIAL_STATE, action) => {
   case SCORE:
     return {
       ...state,
-      score: action.score,
+      score: state.score + action.score,
     };
   case RECORD_TIMER:
     return {
@@ -46,6 +46,6 @@ const globalReducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-const rootReducer = combineReducers({ globalReducer });
+const rootReducer = combineReducers({ player });
 
 export default rootReducer;
