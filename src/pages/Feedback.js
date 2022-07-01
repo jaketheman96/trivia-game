@@ -7,10 +7,10 @@ const NUMBER_OF_ASSERTIONS = 3;
 
 class Feedback extends React.Component {
   render() {
-    const { assertions, score } = this.props;
+    const { assertions } = this.props;
     return (
       <>
-        <Header score={ score } />
+        <Header />
         <div className="feedbacks">
           {
             assertions < NUMBER_OF_ASSERTIONS
@@ -23,17 +23,15 @@ class Feedback extends React.Component {
   }
 }
 
-const mapStateToProps = ({ globalReducer }) => {
-  const { assertions, score } = globalReducer;
+const mapStateToProps = ({ player }) => {
+  const { assertions } = player;
   return ({
     assertions: Number(assertions),
-    score,
   });
 };
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
-  score: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps, null)(Feedback);
