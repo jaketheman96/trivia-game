@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getAssertions, recordTimer, updateScore } from '../redux/actions';
+import { countAssertions,
+  getAssertions, recordTimer, updateScore } from '../redux/actions';
 import Header from '../components/Header';
 
 const RESPONSE_CODE_NUM = 3;
@@ -19,8 +20,9 @@ class Game extends React.Component {
     setStyle: false,
     score: 0,
     stopTimer: false,
-    seconds: 3,
+    seconds: 30,
     showNext: false,
+    totalAssertions: 0,
   }
 
   async componentDidMount() {
@@ -75,7 +77,7 @@ class Game extends React.Component {
 
   handleNextQuestion = () => {
     this.stopTimer();
-    const { index, score } = this.state;
+    const { index, score, totalAssertions } = this.state;
     const { history, dispatch } = this.props;
     this.timer = 0;
     if (index === NUMBER_INDEX) {
@@ -86,6 +88,7 @@ class Game extends React.Component {
         showNext: false,
       }, () => this.startTimer());
       dispatch(updateScore(score));
+      dispatch(countAssertions(totalAssertions));
       history.push('/feedback');
     }
     this.setState((prevState) => ({
@@ -101,6 +104,7 @@ class Game extends React.Component {
     const { name, id } = target;
     this.setState({ stopTimer: true, setStyle: true, showNext: true });
     if (id.includes(CORRECT_ANSWER)) {
+      this.setState((prevState) => ({ totalAssertions: prevState.totalAssertions + 1 }));
       this.sum(name, seconds);
     }
   }
@@ -151,7 +155,7 @@ class Game extends React.Component {
   )
 
   render() {
-    const { assertions } = this.props;
+    const { assertionsUser } = this.props;
     const {
       questions,
       index, rigthAnswers, setStyle, difficulty, seconds, showNext, score } = this.state;
@@ -170,9 +174,9 @@ class Game extends React.Component {
                   className="answers"
                 >
                   {
-                    assertions[0]
+                    assertionsUser[0]
                     && (
-                      assertions[index].map((assertion, position) => (
+                      assertionsUser[index].map((assertion, position) => (
                         <button
                           type="button"
                           key={ assertion }
@@ -206,6 +210,7 @@ class Game extends React.Component {
                     <button
                       type="button"
                       onClick={ this.handleNext }
+                      data-testid="btn-next"
                     >
                       Próxima pergunta
                     </button>
@@ -220,9 +225,9 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = ({ globalReducer }) => {
-  const { assertions } = globalReducer;
+  const { assertionsUser } = globalReducer;
   return ({
-    assertions,
+    assertionsUser,
     timer: globalReducer.timer,
   });
 };
@@ -232,7 +237,7 @@ Game.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  assertions: PropTypes.arrayOf(
+  assertionsUser: PropTypes.arrayOf(
     PropTypes.arrayOf(
       PropTypes.string.isRequired,
     ).isRequired,
