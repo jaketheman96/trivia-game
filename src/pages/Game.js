@@ -8,7 +8,7 @@ import Header from '../components/Header';
 const RESPONSE_CODE_NUM = 3;
 const NUMBER_INDEX = 4;
 const HARD = 3;
-// const SCORE_10 = 10;
+const SCORE_10 = 10;
 const CORRECT_ANSWER = 'correct-answer';
 
 class Game extends React.Component {
@@ -77,8 +77,8 @@ class Game extends React.Component {
 
   handleNextQuestion = () => {
     this.stopTimer();
-    const { index, score, totalAssertions } = this.state;
-    const { history, dispatch } = this.props;
+    const { index } = this.state;
+    const { history } = this.props;
     this.timer = 0;
     if (index === NUMBER_INDEX) {
       this.setState({
@@ -87,8 +87,6 @@ class Game extends React.Component {
         stopTimer: false,
         showNext: false,
       }, () => this.startTimer());
-      dispatch(updateScore(score));
-      dispatch(countAssertions(totalAssertions));
       history.push('/feedback');
     }
     this.setState((prevState) => ({
@@ -100,14 +98,29 @@ class Game extends React.Component {
   }
 
   handleAnswer = ({ target }) => {
-    const { id } = target;
+    const { seconds } = this.state;
+    const { dispatch } = this.props;
+    const { name, id } = target;
     this.setState({ stopTimer: true, setStyle: true, showNext: true });
     if (id.includes(CORRECT_ANSWER)) {
-      this.setState((prevState) => ({
-        totalAssertions: prevState.totalAssertions + 1,
-        score: prevState.score + 1,
-      }));
+      this.setState((prevState) => {
+        dispatch(countAssertions(prevState.totalAssertions + 1));
+        return { totalAssertions: prevState.totalAssertions + 1 };
+      });
+      this.sum(name, seconds);
     }
+  }
+
+  sum = (index, seconds) => {
+    const { difficulty } = this.state;
+    const { dispatch } = this.props;
+    const sum = (
+      Number(SCORE_10) + (Number(seconds) * Number(difficulty[index])));
+    this.setState((prevState) => {
+      dispatch(updateScore((Number(prevState.score) + Number(sum))));
+      return { score:
+      (Number(prevState.score) + Number(sum)) };
+    });
   }
 
   startTimer = () => {
@@ -143,18 +156,17 @@ class Game extends React.Component {
   }
 
   getName = (assertion, right, position) => (
-    assertion === right
-      ? CORRECT_ANSWER : `wrong-answer-${position}`
+    assertion === right ? CORRECT_ANSWER : `wrong-answer-${position}`
   )
 
   render() {
     const { assertionsUser } = this.props;
     const {
       questions,
-      index, rigthAnswers, setStyle, difficulty, seconds, showNext, score } = this.state;
+      index, rigthAnswers, setStyle, difficulty, seconds, showNext } = this.state;
     return (
       <>
-        <Header score={ score } />
+        <Header />
         {
           questions[0]
             ? (
@@ -217,12 +229,9 @@ class Game extends React.Component {
   }
 }
 
-const mapStateToProps = ({ globalReducer }) => {
-  const { assertionsUser } = globalReducer;
-  return ({
-    assertionsUser,
-    timer: globalReducer.timer,
-  });
+const mapStateToProps = ({ player }) => {
+  const { assertionsUser } = player;
+  return ({ assertionsUser, timer: player.timer });
 };
 
 Game.propTypes = {

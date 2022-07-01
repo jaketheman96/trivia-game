@@ -6,27 +6,45 @@ import Header from '../components/Header';
 const NUMBER_OF_ASSERTIONS = 3;
 
 class Feedback extends React.Component {
+  playAgain = () => {
+    const { history } = this.props;
+    history.push('/');
+  }
+
   render() {
     const { assertions, score } = this.props;
     return (
       <>
-        <Header score={ score } />
+        <Header />
+        {
+          assertions < NUMBER_OF_ASSERTIONS
+            ? <p data-testid="feedback-text">Could be better...</p>
+            : <p data-testid="feedback-text">Well Done!</p>
+        }
         <div className="feedbacks">
-          {
-            assertions < NUMBER_OF_ASSERTIONS
-              ? <p data-testid="feedback-text">Could be better...</p>
-              : <p data-testid="feedback-text">Well Done!</p>
-          }
+          <p data-testid="feedback-total-question">
+            {`${assertions} acertos`}
+          </p>
+          <p data-testid="feedback-total-score">
+            {`${score} pontos`}
+          </p>
         </div>
+        <button
+          type="button"
+          onClick={ this.playAgain }
+          data-testid="btn-play-again"
+        >
+          Play Again
+        </button>
       </>
     );
   }
 }
 
-const mapStateToProps = ({ globalReducer }) => {
-  const { assertions, score } = globalReducer;
+const mapStateToProps = ({ player }) => {
+  const { assertions, score } = player;
   return ({
-    assertions: Number(assertions),
+    assertions: assertions.toFixed(),
     score,
   });
 };
@@ -34,6 +52,9 @@ const mapStateToProps = ({ globalReducer }) => {
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default connect(mapStateToProps, null)(Feedback);

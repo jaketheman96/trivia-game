@@ -21,18 +21,20 @@ class Header extends React.Component {
           alt={ `${name}'s avatar` }
           data-testid="header-profile-picture"
         />
-        <p data-testid="header-score">{score}</p>
+        <p>Seu score é:</p>
+        <p data-testid="header-score">{ score }</p>
       </header>
     );
   }
 }
 
-const mapStateToProps = ({ globalReducer }) => {
-  const { name, gravatarEmail, assertions } = globalReducer;
+const mapStateToProps = ({ player }) => {
+  const { name, gravatarEmail, assertions, score } = player;
   return ({
     name,
     hashMail: gravatarEmail,
     assertions,
+    score,
   });
 };
 
