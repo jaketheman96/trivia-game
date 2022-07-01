@@ -81,16 +81,15 @@ class Game extends React.Component {
     const { history } = this.props;
     this.timer = 0;
     if (index === NUMBER_INDEX) {
-      this.setState({
-        index: 0,
+      this.setState({ index: 0,
         setStyle: false,
         stopTimer: false,
         showNext: false,
       }, () => this.startTimer());
+      this.setState({ score: 0 });
       history.push('/feedback');
     }
-    this.setState((prevState) => ({
-      index: prevState.index + 1,
+    this.setState((prevState) => ({ index: prevState.index + 1,
       setStyle: false,
       stopTimer: false,
       showNext: false,

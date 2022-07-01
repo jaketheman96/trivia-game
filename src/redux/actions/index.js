@@ -3,6 +3,7 @@ export const GET_ASSERTIONS = 'GET_ASSERTIONS';
 export const COUNT_ASSERTIONS = 'COUNT_ASSERTIONS';
 export const SCORE = 'SCORE';
 export const RECORD_TIMER = 'RECORD_TIMER';
+export const RESET_GAME = 'RESET_GAME';
 
 export const addUserInfos = (userInfos) => ({
   type: ADD_USER_INFOS,
@@ -28,3 +29,5 @@ export const countAssertions = (count) => ({
   type: COUNT_ASSERTIONS,
   count,
 });
+
+export const resetGame = () => ({ type: RESET_GAME });
