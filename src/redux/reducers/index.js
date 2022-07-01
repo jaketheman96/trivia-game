@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux';
 import md5 from 'crypto-js/md5';
-import { ADD_USER_INFOS, GET_ASSERTIONS } from '../actions';
+import { ADD_USER_INFOS, GET_ASSERTIONS, RECORD_TIMER, SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
   assertions: [],
   score: 0,
   gravatarEmail: '',
+  timer: [],
 };
 
 const globalReducer = (state = INITIAL_STATE, action) => {
@@ -22,6 +23,16 @@ const globalReducer = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       assertions: action.payload,
+    };
+  case SCORE:
+    return {
+      ...state,
+      score: [...state.score, action.payload],
+    };
+  case RECORD_TIMER:
+    return {
+      ...state,
+      timer: [...state.timer, action.timer],
     };
   default:
     return state;

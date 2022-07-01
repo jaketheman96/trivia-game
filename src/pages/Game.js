@@ -1,18 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getAssertions } from '../redux/actions';
-import Timer from '../components/Timer';
+import { getAssertions, recordTimer } from '../redux/actions';
 
 const RESPONSE_CODE_NUM = 3;
 const NUMBER_INDEX = 4;
+const HARD = 3;
+const SCORE_10 = 10;
+const CORRECT_ANSWER = 'correct-answer';
 
 class Game extends React.Component {
   state = {
     questions: [],
     index: 0,
     rigthAnswers: [],
+    difficulty: [],
     setStyle: false,
+    score: 0,
+    stopTimer: false,
+    seconds: 30,
   }
 
   async componentDidMount() {
@@ -29,8 +35,10 @@ class Game extends React.Component {
         questions: data.results,
       }, () => {
         const answers = [];
+        const arrayDifficulty = [];
         const assertions = data.results.map((question) => {
           answers.push(question.correct_answer);
+          arrayDifficulty.push(question.difficulty);
           return [
             question.correct_answer,
             ...question.incorrect_answers,
@@ -38,18 +46,29 @@ class Game extends React.Component {
             .sort((a, b) => a.sort - b.sort)
             .map(({ value }) => value);
         });
+        const newArray = arrayDifficulty.map((dif) => (dif.replace('easy', 1)))
+          .map((dif) => (dif.replace('medium', 2)))
+          .map((dif) => (dif.replace('hard', HARD)));
         this.setState({
           rigthAnswers: answers,
+          difficulty: newArray,
         });
         dispatch(getAssertions(assertions));
       });
     } catch (error) {
       console.log(error);
     }
+    this.timer = 0;
+    this.startTimer();
   }
 
   changeSetStyle = () => {
     this.setState({ setStyle: true });
+  }
+
+  timeAnswers = (seconds) => {
+    const { dispatch } = this.props;
+    dispatch(recordTimer(seconds));
   }
 
   handleNextQuestion = () => {
@@ -59,28 +78,70 @@ class Game extends React.Component {
       this.setState({
         index: 0,
         setStyle: false,
+        stopTimer: false,
       });
     }
     this.setState((prevState) => ({
       index: prevState.index + 1,
       setStyle: false,
+      stopTimer: false,
     }));
   }
 
-  handleAnswer = () => {
-    this.setState({
-      setStyle: true,
-    });
+  handleAnswer = ({ target }) => {
+    const { seconds } = this.state;
+    const { name, id } = target;
+    this.setState({ stopTimer: true, setStyle: true });
+    if (id.includes(CORRECT_ANSWER)) {
+      this.sum(name, seconds);
+    }
+  }
+
+  sum = (index, seconds) => {
+    const { difficulty } = this.state;
+    const sum = (
+      Number(SCORE_10) + (Number(seconds) * Number(difficulty[index])));
+    this.setState((prevState) => ({ score: (Number(prevState.score) + Number(sum)) }));
+  }
+
+  startTimer = () => {
+    const { seconds } = this.state;
+    const ms = 1000;
+    if (this.timer === 0 && seconds > 0) {
+      this.timer = setInterval(this.countDown, ms);
+    }
+  }
+
+  countDown = async () => {
+    const { seconds, setStyle, stopTimer } = this.state;
+    const count = seconds - 1;
+    if (!stopTimer) {
+      this.setState({
+        seconds: count,
+      });
+      if (seconds === 1) {
+        this.stopTimer();
+        setStyle();
+      }
+    }
+  }
+
+  stopTimer = () => {
+    clearInterval(this.timer);
+  }
+
+  handleNext = () => {
+    this.setState({ seconds: 30 });
+    this.handleNextQuestion();
   }
 
   render() {
     const {
-      hashMail,
-      name,
-      score,
-      assertions,
+      hashMail, name, assertions,
     } = this.props;
-    const { questions, index, rigthAnswers, setStyle } = this.state;
+    const {
+      questions,
+      index, rigthAnswers, setStyle, difficulty, score, seconds } = this.state;
     return (
       <>
         <header>
@@ -102,6 +163,7 @@ class Game extends React.Component {
               <div className="questionContainer">
                 <p data-testid="question-category">{questions[index].category}</p>
                 <p data-testid="question-text">{questions[index].question}</p>
+                <p>{`Dificuldade: ${difficulty[index]}`}</p>
                 <div
                   data-testid="answer-options"
                   className="answers"
@@ -115,7 +177,7 @@ class Game extends React.Component {
                           key={ assertion }
                           data-testid={
                             assertion === rigthAnswers[index]
-                              ? 'correct-answer' : `wrong-answer-${position}`
+                              ? CORRECT_ANSWER : `wrong-answer-${position}`
                           }
                           style={
                             setStyle
@@ -127,6 +189,11 @@ class Game extends React.Component {
                               : {}
                           }
                           onClick={ this.handleAnswer }
+                          name={ index }
+                          id={
+                            assertion === rigthAnswers[index]
+                              ? CORRECT_ANSWER : `wrong-answer-${position}`
+                          }
                           disabled={ setStyle }
                         >
                           {assertion}
@@ -136,10 +203,13 @@ class Game extends React.Component {
                   }
                 </div>
                 <div className="timer">
-                  <Timer
-                    setStyle={ this.changeSetStyle }
-                    handleNextQuestion={ this.handleNextQuestion }
-                  />
+                  <h2>{`Tempo: ${seconds} segundos`}</h2>
+                  <button
+                    type="button"
+                    onClick={ this.handleNext }
+                  >
+                    Próxima pergunta
+                  </button>
                 </div>
               </div>
             ) : <p>Token expirado</p>
@@ -156,13 +226,13 @@ const mapStateToProps = ({ globalReducer }) => {
     hashMail: gravatarEmail,
     score,
     assertions,
+    timer: globalReducer.timer,
   });
 };
 
 Game.propTypes = {
   hashMail: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

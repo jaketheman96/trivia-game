@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class Timer extends React.Component {
   state = {
@@ -21,14 +22,16 @@ class Timer extends React.Component {
 
   countDown = async () => {
     const { seconds } = this.state;
-    const { setStyle } = this.props;
+    const { setStyle, stopTimer } = this.props;
     const count = seconds - 1;
-    this.setState({
-      seconds: count,
-    });
-    if (seconds === 1) {
-      this.stopTimer();
-      setStyle();
+    if (!stopTimer) {
+      this.setState({
+        seconds: count,
+      });
+      if (seconds === 1) {
+        this.stopTimer();
+        setStyle();
+      }
     }
   }
 
@@ -44,6 +47,10 @@ class Timer extends React.Component {
 
   render() {
     const { seconds } = this.state;
+    const { stopTimer, timeAnswers } = this.props;
+    if (stopTimer) {
+      timeAnswers(seconds);
+    }
     return (
       <>
         <h2>{`Tempo: ${seconds} segundos`}</h2>
@@ -61,6 +68,8 @@ class Timer extends React.Component {
 Timer.propTypes = {
   setStyle: PropTypes.func.isRequired,
   handleNextQuestion: PropTypes.func.isRequired,
+  stopTimer: PropTypes.bool.isRequired,
+  timeAnswers: PropTypes.func.isRequired,
 };
 
-export default Timer;
+export default connect(null, null)(Timer);
