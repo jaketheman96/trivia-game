@@ -45,16 +45,22 @@ class Feedback extends React.Component {
   }
 
   render() {
-    const { assertions } = this.props;
+    const { assertions, score } = this.props;
     return (
       <>
         <Header />
+        {
+          assertions < NUMBER_OF_ASSERTIONS
+            ? <p data-testid="feedback-text">Could be better...</p>
+            : <p data-testid="feedback-text">Well Done!</p>
+        }
         <div className="feedbacks">
-          {
-            assertions < NUMBER_OF_ASSERTIONS
-              ? <p data-testid="feedback-text">Could be better...</p>
-              : <p data-testid="feedback-text">Well Done!</p>
-          }
+          <p data-testid="feedback-total-question">
+            {`${assertions} acertos`}
+          </p>
+          <p data-testid="feedback-total-score">
+            {`${score} pontos`}
+          </p>
         </div>
         <button
           type="button"
@@ -88,10 +94,10 @@ const mapStateToProps = ({ player }) => {
 Feedback.propTypes = {
   dispatch: PropTypes.func.isRequired,
   assertions: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  score: PropTypes.number.isRequired,
   gravatarEmail: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
 };
