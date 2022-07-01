@@ -14,6 +14,7 @@ const INITIAL_STATE = {
 
 const player = (state = INITIAL_STATE, action) => {
   const { type, userInfos } = action;
+  console.log(action);
   switch (type) {
   case ADD_USER_INFOS:
     return {

@@ -17,16 +17,22 @@ class Feedback extends React.Component {
   }
 
   render() {
-    const { assertions } = this.props;
+    const { assertions, score } = this.props;
     return (
       <>
         <Header />
+        {
+          assertions < NUMBER_OF_ASSERTIONS
+            ? <p data-testid="feedback-text">Could be better...</p>
+            : <p data-testid="feedback-text">Well Done!</p>
+        }
         <div className="feedbacks">
-          {
-            assertions < NUMBER_OF_ASSERTIONS
-              ? <p data-testid="feedback-text">Could be better...</p>
-              : <p data-testid="feedback-text">Well Done!</p>
-          }
+          <p data-testid="feedback-total-question">
+            {`${assertions} acertos`}
+          </p>
+          <p data-testid="feedback-total-score">
+            {`${score} pontos`}
+          </p>
         </div>
         <button
           type="button"
@@ -48,14 +54,16 @@ class Feedback extends React.Component {
 }
 
 const mapStateToProps = ({ player }) => {
-  const { assertions } = player;
+  const { assertions, score } = player;
   return ({
-    assertions: Number(assertions),
+    assertions: assertions.toFixed(),
+    score,
   });
 };
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
