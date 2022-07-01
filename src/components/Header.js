@@ -28,11 +28,10 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = ({ globalReducer }) => {
-  const { name, gravatarEmail, score, assertions } = globalReducer;
+  const { name, gravatarEmail, assertions } = globalReducer;
   return ({
     name,
     hashMail: gravatarEmail,
-    score,
     assertions,
   });
 };
