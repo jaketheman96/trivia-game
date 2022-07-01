@@ -81,7 +81,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { assertions } = this.props;
+    const { assertionsUser } = this.props;
     const { questions, index, rigthAnswers, setStyle, showNext } = this.state;
     return (
       <>
@@ -97,9 +97,9 @@ class Game extends React.Component {
                   className="answers"
                 >
                   {
-                    assertions[0]
+                    assertionsUser[0]
                     && (
-                      assertions[index].map((assertion, position) => (
+                      assertionsUser[index].map((assertion, position) => (
                         <button
                           type="button"
                           key={ assertion }
@@ -141,9 +141,9 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = ({ globalReducer }) => {
-  const { assertions } = globalReducer;
+  const { assertionsUser } = globalReducer;
   return ({
-    assertions,
+    assertionsUser,
   });
 };
 
@@ -152,7 +152,7 @@ Game.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  assertions: PropTypes.arrayOf(
+  assertionsUser: PropTypes.arrayOf(
     PropTypes.arrayOf(
       PropTypes.string.isRequired,
     ).isRequired,
