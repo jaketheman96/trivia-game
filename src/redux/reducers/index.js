@@ -27,7 +27,7 @@ const globalReducer = (state = INITIAL_STATE, action) => {
   case SCORE:
     return {
       ...state,
-      score: [...state.score, action.payload],
+      score: action.score,
     };
   case RECORD_TIMER:
     return {

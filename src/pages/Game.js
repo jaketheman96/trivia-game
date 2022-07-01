@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getAssertions, recordTimer } from '../redux/actions';
+import { getAssertions, recordTimer, updateScore } from '../redux/actions';
+import Header from '../components/Header';
 
 const RESPONSE_CODE_NUM = 3;
 const NUMBER_INDEX = 4;
@@ -19,6 +20,7 @@ class Game extends React.Component {
     score: 0,
     stopTimer: false,
     seconds: 3,
+    showNext: false,
   }
 
   async componentDidMount() {
@@ -63,7 +65,7 @@ class Game extends React.Component {
   }
 
   changeSetStyle = () => {
-    this.setState({ setStyle: true, stopTimer: true });
+    this.setState({ setStyle: true, stopTimer: true, showNext: true });
   }
 
   timeAnswers = (seconds) => {
@@ -73,26 +75,31 @@ class Game extends React.Component {
 
   handleNextQuestion = () => {
     this.stopTimer();
-    const { index } = this.state;
+    const { index, score } = this.state;
+    const { history, dispatch } = this.props;
     this.timer = 0;
     if (index === NUMBER_INDEX) {
       this.setState({
         index: 0,
         setStyle: false,
         stopTimer: false,
+        showNext: false,
       }, () => this.startTimer());
+      dispatch(updateScore(score));
+      history.push('/feedback');
     }
     this.setState((prevState) => ({
       index: prevState.index + 1,
       setStyle: false,
       stopTimer: false,
+      showNext: false,
     }), () => this.startTimer());
   }
 
   handleAnswer = ({ target }) => {
     const { seconds } = this.state;
     const { name, id } = target;
-    this.setState({ stopTimer: true, setStyle: true });
+    this.setState({ stopTimer: true, setStyle: true, showNext: true });
     if (id.includes(CORRECT_ANSWER)) {
       this.sum(name, seconds);
     }
@@ -102,7 +109,8 @@ class Game extends React.Component {
     const { difficulty } = this.state;
     const sum = (
       Number(SCORE_10) + (Number(seconds) * Number(difficulty[index])));
-    this.setState((prevState) => ({ score: (Number(prevState.score) + Number(sum)) }));
+    this.setState((prevState) => ({ score:
+      (Number(prevState.score) + Number(sum)) }));
   }
 
   startTimer = () => {
@@ -137,28 +145,19 @@ class Game extends React.Component {
     this.handleNextQuestion();
   }
 
+  getName = (assertion, right, position) => (
+    assertion === right
+      ? CORRECT_ANSWER : `wrong-answer-${position}`
+  )
+
   render() {
-    const {
-      hashMail, name, assertions,
-    } = this.props;
+    const { assertions } = this.props;
     const {
       questions,
-      index, rigthAnswers, setStyle, difficulty, score, seconds } = this.state;
+      index, rigthAnswers, setStyle, difficulty, seconds, showNext, score } = this.state;
     return (
       <>
-        <header>
-          <h2
-            data-testid="header-player-name"
-          >
-            {name}
-          </h2>
-          <img
-            src={ `https://www.gravatar.com/avatar/${hashMail}` }
-            alt={ `${name}'s avatar` }
-            data-testid="header-profile-picture"
-          />
-          <p data-testid="header-score">{`Seu score é: ${score}`}</p>
-        </header>
+        <Header score={ score } />
         {
           questions[0]
             ? (
@@ -192,10 +191,7 @@ class Game extends React.Component {
                           }
                           onClick={ this.handleAnswer }
                           name={ index }
-                          id={
-                            assertion === rigthAnswers[index]
-                              ? CORRECT_ANSWER : `wrong-answer-${position}`
-                          }
+                          id={ this.getName(assertion, rigthAnswers[index], position) }
                           disabled={ setStyle }
                         >
                           {assertion}
@@ -206,12 +202,14 @@ class Game extends React.Component {
                 </div>
                 <div className="timer">
                   <h2>{`Tempo: ${seconds} segundos`}</h2>
-                  <button
-                    type="button"
-                    onClick={ this.handleNext }
-                  >
-                    Próxima pergunta
-                  </button>
+                  { showNext && (
+                    <button
+                      type="button"
+                      onClick={ this.handleNext }
+                    >
+                      Próxima pergunta
+                    </button>
+                  )}
                 </div>
               </div>
             ) : <p>Token expirado</p>
@@ -222,19 +220,14 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = ({ globalReducer }) => {
-  const { name, gravatarEmail, score, assertions } = globalReducer;
+  const { assertions } = globalReducer;
   return ({
-    name,
-    hashMail: gravatarEmail,
-    score,
     assertions,
     timer: globalReducer.timer,
   });
 };
 
 Game.propTypes = {
-  hashMail: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
