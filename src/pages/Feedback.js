@@ -6,6 +6,11 @@ import Header from '../components/Header';
 const NUMBER_OF_ASSERTIONS = 3;
 
 class Feedback extends React.Component {
+  goToRanking = () => {
+    const { history } = this.props;
+    history.push('/ranking');
+  }
+
   playAgain = () => {
     const { history } = this.props;
     history.push('/');
@@ -29,6 +34,13 @@ class Feedback extends React.Component {
             {`${score} pontos`}
           </p>
         </div>
+        <button
+          type="button"
+          data-testid="btn-ranking"
+          onClick={ this.goToRanking }
+        >
+          Ver Ranking
+        </button>
         <button
           type="button"
           onClick={ this.playAgain }
