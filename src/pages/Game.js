@@ -18,7 +18,7 @@ class Game extends React.Component {
     setStyle: false,
     score: 0,
     stopTimer: false,
-    seconds: 30,
+    seconds: 3,
   }
 
   async componentDidMount() {
@@ -63,7 +63,7 @@ class Game extends React.Component {
   }
 
   changeSetStyle = () => {
-    this.setState({ setStyle: true });
+    this.setState({ setStyle: true, stopTimer: true });
   }
 
   timeAnswers = (seconds) => {
@@ -72,6 +72,7 @@ class Game extends React.Component {
   }
 
   handleNextQuestion = () => {
+    this.stopTimer();
     const { index } = this.state;
     this.timer = 0;
     if (index === NUMBER_INDEX) {
@@ -79,13 +80,13 @@ class Game extends React.Component {
         index: 0,
         setStyle: false,
         stopTimer: false,
-      });
+      }, () => this.startTimer());
     }
     this.setState((prevState) => ({
       index: prevState.index + 1,
       setStyle: false,
       stopTimer: false,
-    }));
+    }), () => this.startTimer());
   }
 
   handleAnswer = ({ target }) => {
@@ -113,16 +114,17 @@ class Game extends React.Component {
   }
 
   countDown = async () => {
-    const { seconds, setStyle, stopTimer } = this.state;
+    const { seconds, stopTimer } = this.state;
     const count = seconds - 1;
     if (!stopTimer) {
       this.setState({
         seconds: count,
+      }, () => {
+        if (seconds === 1) {
+          this.stopTimer();
+          this.changeSetStyle();
+        }
       });
-      if (seconds === 1) {
-        this.stopTimer();
-        setStyle();
-      }
     }
   }
 
