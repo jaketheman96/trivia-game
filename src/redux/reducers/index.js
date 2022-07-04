@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import md5 from 'crypto-js/md5';
 import { ADD_USER_INFOS,
-  COUNT_ASSERTIONS, GET_ASSERTIONS, RECORD_TIMER, RESET_GAME, SCORE } from '../actions';
+  COUNT_ASSERTIONS, GET_ASSERTIONS, RESET_GAME, SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -30,11 +30,6 @@ const player = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       score: state.score + action.score,
-    };
-  case RECORD_TIMER:
-    return {
-      ...state,
-      timer: [...state.timer, action.timer],
     };
   case COUNT_ASSERTIONS:
     return {
