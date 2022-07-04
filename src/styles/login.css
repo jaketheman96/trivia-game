@@ -1,0 +1,89 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #212121;
+  color: white;
+  font-family: monospace , serif;
+  letter-spacing: 0.05em;
+}
+
+h1 {
+  font-size: 23px;
+}
+
+form {
+  margin: 0 auto;
+  padding: 64px 15px 24px;
+  padding-left: 82px;
+  padding-right: 82px;
+  width: 60%;
+}
+
+form input {
+  background: transparent;
+  color: white;
+  font-family: monospace , serif;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  margin: 20px 0;
+  padding: 14px 16px;
+  width: 100%;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0 50px #212121 inset;
+  -webkit-text-fill-color: white;
+}
+
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0 50px #212121 inset;
+  -webkit-text-fill-color: white;
+}
+
+button {
+  background: transparent;
+  border: 0.1px solid #212121;
+  color: white;
+  display: block;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin: 20px 0;
+  outline: none;
+  padding: 14px 16px;
+  width: 100%;
+}
+
+button:hover {
+  border: 0.1px solid white;
+  cursor: pointer;
+}
+
+.container {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  width: 100vw;
+}
+
+.loginForm {
+  align-items: center;
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0 auto;
+  padding: 20px;
+  width: 50%;
+}
+
+hr {
+  height: 350px;
+}
+
+.imageTrivia {
+  margin: 0;
+  width: 90%;
+}

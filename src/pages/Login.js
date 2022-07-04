@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addUserInfos } from '../redux/actions';
+import '../styles/login.css';
 
 class Login extends React.Component {
   state = {
@@ -35,45 +36,56 @@ class Login extends React.Component {
   render() {
     const { nameInput, email } = this.state;
     return (
-      <div className="loginForm">
-        <form onSubmit={ this.handleClick }>
-          <label htmlFor="user-name">
-            Nome:
-            <input
-              type="text"
-              id="user-name"
-              name="nameInput"
-              data-testid="input-player-name"
-              value={ nameInput }
-              onChange={ this.handleChange }
+      <div className="container">
+        <div className="loginForm">
+          <div>
+            <img
+              src="https://cdn.discordapp.com/attachments/993603878689972295/993603951142383709/TRIVIA.png"
+              alt="Trivia Logo"
+              className="imageTrivia"
             />
-          </label>
-          <label htmlFor="email">
-            Email:
-            <input
-              type="email"
-              id="email"
-              name="email"
-              data-testid="input-gravatar-email"
-              value={ email }
-              onChange={ this.handleChange }
-            />
-          </label>
-          <button
-            type="submit"
-            data-testid="btn-play"
-            disabled={ !nameInput || !email }
-          >
-            Play
-          </button>
-          <button
-            type="button"
-            data-testid="btn-settings"
-            onClick={ this.handleSettingsChange }
-          >
-            Configurações
-          </button>
-        </form>
+          </div>
+          <hr />
+          <form onSubmit={ this.handleClick }>
+            <h1>Entrar</h1>
+            <label htmlFor="user-name">
+              Nome:
+              <input
+                type="text"
+                id="user-name"
+                name="nameInput"
+                data-testid="input-player-name"
+                value={ nameInput }
+                onChange={ this.handleChange }
+              />
+            </label>
+            <label htmlFor="email">
+              Email:
+              <input
+                type="email"
+                id="email"
+                name="email"
+                data-testid="input-gravatar-email"
+                value={ email }
+                onChange={ this.handleChange }
+              />
+            </label>
+            <button
+              type="submit"
+              data-testid="btn-play"
+              disabled={ !nameInput || !email }
+            >
+              Play
+            </button>
+            <button
+              type="button"
+              data-testid="btn-settings"
+              onClick={ this.handleSettingsChange }
+            >
+              Configurações
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
