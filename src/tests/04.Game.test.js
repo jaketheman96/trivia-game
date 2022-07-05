@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import App from '../App';
@@ -49,6 +49,22 @@ describe('Testa a página de game', () => {
     expect(nextQuestion).toBeInTheDocument();
   });
   it('Deve redirecionar para a página inicial quando o token é inválido', async () => {
-    
+    global.fetch = jest.fn(() => Promise.resolve({
+        json: () => Promise.resolve({
+          response_code: 3,
+          results: [],
+        }),
+      }),
+    );
+
+    const { history } = renderWithRouterAndRedux(<Game />);
+
+    const token = await screen.findByText(/Token/i);
+    expect(token).toBeInTheDocument();
+
+    history.push('/');
+    expect(localStorage.getItem('token')).toBeFalsy();
+    const { pathname } = history.location;
+    expect(pathname).toBe('/');
   });
 });
