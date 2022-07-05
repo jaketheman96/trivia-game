@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { countAssertions,
-  getAssertions, recordTimer, updateScore } from '../redux/actions';
+  getAssertions, updateScore } from '../redux/actions';
 import Header from '../components/Header';
 
 const RESPONSE_CODE_NUM = 3;
@@ -70,11 +70,6 @@ class Game extends React.Component {
     this.setState({ setStyle: true, stopTimer: true, showNext: true });
   }
 
-  timeAnswers = (seconds) => {
-    const { dispatch } = this.props;
-    dispatch(recordTimer(seconds));
-  }
-
   handleNextQuestion = () => {
     this.stopTimer();
     const { index } = this.state;
@@ -85,7 +80,7 @@ class Game extends React.Component {
         setStyle: false,
         stopTimer: false,
         showNext: false,
-      }, () => this.startTimer());
+      });
       this.setState({ score: 0 });
       history.push('/feedback');
     }
